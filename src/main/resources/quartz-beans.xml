@@ -1,0 +1,30 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">   
+	
+   <!-- run every cron timer min -->
+   <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+	<property name="triggers">
+	  <bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="job-details" />
+		<!-- <property name="cronExpression" value="0 0/3 * * * ?" /> -->
+		<property name="cronExpression" value="${quartz.scheduler.cron}" />
+	  </bean>
+	</property>
+  </bean>
+
+  <bean id="job-details" class="org.springframework.scheduling.quartz.JobDetailBean">
+	<property name="jobClass" value="com.rovicorp.scheduler.JobLauncherDetails" />
+	<property name="group" value="default" />
+	<property name="jobDataAsMap">
+	  <map>
+		<entry key="jobName" value="comcast-dpi-job" />
+		<entry key="jobLocator" value-ref="jobRegistry" />
+		<entry key="jobLauncher" value-ref="jobLauncher" />
+	  </map>
+	</property>
+  </bean> 
+
+</beans>

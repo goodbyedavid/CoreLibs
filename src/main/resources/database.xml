@@ -1,0 +1,31 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/jdbc 
+		http://www.springframework.org/schema/jdbc/spring-jdbc-3.2.xsd">
+    <bean id="transactionManager"
+		class="org.springframework.batch.support.transaction.ResourcelessTransactionManager" />	
+	
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+      <property name="driverClassName" value="${db.sqlserver.driver.classname}" />
+      <property name="url" value="jdbc:jtds:${db.database.type}://${db.sqlserver.name}/${db.configDBName};integrated security=${db.integrated.security}" />
+      <property name="username" value="${db.user.name}" />
+      <property name="password" value="${db.password}" />
+    </bean>
+    
+    <bean id="springBatchLogDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+      <property name="driverClassName" value="${db.sqlserver.driver.classname.for.springBatchLog}" />
+      <property name="url" value="jdbc:jtds:${db.database.type.for.springBatchLog}://${db.sqlserver.name.for.springBatchLog}/${db.configDBName.for.springBatchLog};integrated security=${db.integrated.security.for.springBatchLog}" />
+      <property name="username" value="${db.user.name.for.springBatchLog}" />
+      <property name="password" value="${db.password.for.springBatchLog}" />
+    </bean>
+    
+	<!-- create job-meta tables automatically -->
+	<!-- <jdbc:initialize-database data-source="springBatchLogDataSource">
+		<jdbc:script location="org/springframework/batch/core/schema-drop-sqlserver.sql" />
+		<jdbc:script location="org/springframework/batch/core/schema-sqlserver.sql" />
+	</jdbc:initialize-database> -->
+	
+</beans>
+

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:batch="http://www.springframework.org/schema/batch" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/batch 
+		http://www.springframework.org/schema/batch/spring-batch-2.2.xsd
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/util 
+		http://www.springframework.org/schema/util/spring-util-3.2.xsd
+		">
+
+	<bean id="logShippingQueryBean" class="com.rovicorp.dto.LogShippingQuery">
+    	<property name="logShippingQueryValue">
+    		<value>
+				<![CDATA[
+						CREATE TABLE #current_job_status(
+								[JobID]               UNIQUEIDENTIFIER,   
+								[LastRunDate]         NVARCHAR(50),   
+								[LastRunTime]         NVARCHAR(50),   
+								[NextRunDate]         NVARCHAR(50),   
+								[NextRunTime]         NVARCHAR(50),   
+								[NextRunScheduleID]   NVARCHAR(50),   
+								[RequestedToRun]      NVARCHAR(50),   
+								[RequestSource]       NVARCHAR(50),   
+								[RequestSourceID]     NVARCHAR(50),   
+								[Running]             NVARCHAR(50),   
+								[CurrentStep]         NVARCHAR(50),   
+								[CurrentRetryAttempt] NVARCHAR(50),   
+								[State]               INT   
+						)
+						
+						INSERT INTO #current_job_status
+							EXEC [master].sys.xp_sqlagent_enum_jobs 1,''
+						
+						SELECT c.JobID, j.name, isNULL(c.State,4) AS State
+							FROM #current_job_status c
+							JOIN msdb.dbo.sysjobs j ON j.job_id = c.JobID
+							WHERE c.State <> 4 AND j.name IN ('AMG_avg', 'AMG_Extra', 'AMG_MusicMore', 'Babel', 'DSG_EU', 'FaceBook', 'Mosaic', 'MuzeUK', 'Prism', 'RCM_rovicore_20130710_NoMusic1a_en-US', 'Staging', 'Twitter', 'UKVideo')
+				]]>
+			</value>
+    	</property>
+    </bean>
+ 
+</beans>
